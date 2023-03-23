@@ -8,6 +8,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,7 +38,8 @@ public class JwtController {
 	@Autowired 
 	private AuthenticationManager authenticationManager;
 	
-	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 	  
 	
 	@Autowired
@@ -52,7 +54,8 @@ public class JwtController {
 		
 		try {
 			System.out.println("in jwt controller try block start");
-			this.authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(jwtRequest.getUsername(), jwtRequest.getPassword()));
+			//use password encoder here?:-
+			this.authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(jwtRequest.getUsername(),jwtRequest.getPassword()));
 			System.out.println("in jwt controller try block");
 		} catch (UsernameNotFoundException e) {
 			// TODO: handle exception

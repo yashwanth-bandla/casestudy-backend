@@ -19,20 +19,6 @@ public class GetProductsByCategory {
 			}
 		}
 		
-		
-//		int i = 1;
-//		
-//		while(true) {
-//			product1 = productInfoRepository.findById(i).get();
-//			if(product1.getCategory().getCategoryid()==categoryId) {
-//				listByCategory.add(product1);
-//			}
-//			i++;
-//			if(productInfoRepository.findById(i).isEmpty()) {
-//				break;
-//			}
-//		
-//		}
 		return listByCategory;
 		
 	}

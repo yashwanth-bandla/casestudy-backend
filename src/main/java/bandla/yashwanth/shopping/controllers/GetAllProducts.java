@@ -17,15 +17,6 @@ public class GetAllProducts {
 		}
 		
 		
-//		while(true) {
-//			listOfAllProducts.add(productInfoRepository.findById(i).get()) ;
-//			
-//			i++;
-//			if(productInfoRepository.findById(i).isEmpty()) {
-//				break;
-//			}
-//		
-//		}
 		return listOfAllProducts;
 	}
 }

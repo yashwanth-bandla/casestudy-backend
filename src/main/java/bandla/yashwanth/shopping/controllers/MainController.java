@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.ReturnedType;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,6 +28,7 @@ import bandla.yashwanth.shopping.dao.CategoryRepository;
 import bandla.yashwanth.shopping.dao.ProductInfoRepository;
 import bandla.yashwanth.shopping.dao.SubCategoryRepository;
 import bandla.yashwanth.shopping.dao.UserInfoRepository;
+import jakarta.persistence.EntityManager;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -45,6 +47,11 @@ public class MainController {
 	private CartItemRepository cartItemRepository;
 	@Autowired
 	private CartRepository cartRepository;
+	@Autowired 
+	private EntityManager entityManager;
+	
+	@Autowired 
+	private PasswordEncoder passwordEncoder;
 	
 	
 	@PostMapping("/login")
@@ -82,7 +89,7 @@ public class MainController {
 //		ResponseEntity<String>
 		userInfoRepository = this.userInfoRepository;
 		addressRepository =  this.addressRepository;
-		DoSignUp.doSignUp(user,userInfoRepository,addressRepository);
+		DoSignUp.doSignUp(user,userInfoRepository,addressRepository, passwordEncoder);
 		ResultObject successResultObject = new ResultObject();
 		successResultObject.setResult("successfully signed up!");
 		return new ResponseEntity<>(successResultObject, HttpStatus.OK);
@@ -119,7 +126,7 @@ public class MainController {
 	@PostMapping("/products/addProduct")
 	public ProductInfo addproduct(@RequestBody ProductInfo addedproduct, ProductInfoRepository productInfoRepository) {
 		productInfoRepository = this.productInfoRepository;
-		AddProduct.addProduct(addedproduct, productInfoRepository);
+		AddProduct.addProduct(addedproduct, productInfoRepository, categoryRepository, subCategoryRepository);
 		return addedproduct;
 	}
 	
@@ -149,6 +156,11 @@ public class MainController {
 		return GetProductsByCategory.getProductsByCategory(categoryid, productInfoRepository);
 	}
 	
+	@GetMapping("/products/filter/{category}/{subcategory}")
+	public List<ProductInfo> productsByFilters(@PathVariable("category") String category, @PathVariable("subcategory") String subcategory){
+		 return GetProductsByFilters.getProductsByFilters(category,subcategory, productInfoRepository, entityManager);
+	}
+	
 //	@PreAuthorize("hasRole('admin')")
 	@GetMapping("/products/search/{searchString}")
 	public List<ProductInfo> productsBySearchString(@PathVariable("searchString") String searchString){
@@ -163,7 +175,7 @@ public class MainController {
 	
 	@GetMapping("/cart/{userId}/getCartItem/{cartitemId}")
 	public CartItem getCartItem(@PathVariable("userId") int userId, @PathVariable("cartitemId") int cartitemId) {
-		return DoGetCartItem.doGetCartItem(userId, cartitemId, userInfoRepository);
+		return DoGetCartItem.doGetCartItem(userId, cartitemId, userInfoRepository,cartItemRepository);
 	}
 
 	@GetMapping("/cart/{userId}/add/{productId}")
