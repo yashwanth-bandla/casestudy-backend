@@ -10,5 +10,5 @@ public class ResultObject {
 	public void setResult(String result) {
 		this.result = result;
 	}
-	
+
 }

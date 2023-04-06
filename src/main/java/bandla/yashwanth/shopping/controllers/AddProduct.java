@@ -1,7 +1,6 @@
 package bandla.yashwanth.shopping.controllers;
 
-
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import bandla.yashwanth.shopping.Category;
 import bandla.yashwanth.shopping.ProductInfo;
@@ -10,6 +9,7 @@ import bandla.yashwanth.shopping.dao.CategoryRepository;
 import bandla.yashwanth.shopping.dao.ProductInfoRepository;
 import bandla.yashwanth.shopping.dao.SubCategoryRepository;
 
+@Service
 public class AddProduct {
 	
 
@@ -19,7 +19,7 @@ public class AddProduct {
 		Category existingCategory ;
 		SubCategory existingSubCategory;
 
-		if(product.getCategory().getCategory()!=null && product.getCategory().getCategory()!="" && product.getCategory()!=null) {
+		if(product.getCategory()!=null && product.getCategory().getCategory()!=null && product.getCategory().getCategory()!="") {
 			
 			if(categoryRepository.getCategoryByCategoryName(product.getCategory().getCategory())!=null) {
 				existingCategory = categoryRepository.getCategoryByCategoryName(product.getCategory().getCategory());

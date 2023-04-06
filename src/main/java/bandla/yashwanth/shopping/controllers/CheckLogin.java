@@ -1,7 +1,5 @@
 package bandla.yashwanth.shopping.controllers;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 
 import bandla.yashwanth.shopping.UserInfo;

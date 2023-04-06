@@ -2,15 +2,24 @@ package bandla.yashwanth.shopping.controllers;
 
 import java.util.List;
 
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+
 import bandla.yashwanth.shopping.CartItem;
 import bandla.yashwanth.shopping.UserInfo;
 import bandla.yashwanth.shopping.dao.UserInfoRepository;
-
+@Service
 public class DoReduceQuantity {
 	public static CartItem doReduceQuantity(int userId, 
 											int productId, 
 											UserInfoRepository userInfoRepository) 
 	{
+		
+		String email = SecurityContextHolder.getContext().getAuthentication()
+                .getName();
+		userId = userInfoRepository.getUserByUserName(email).getUserId();
+		
+		
 		UserInfo userInfo = userInfoRepository.findById(userId).get(); //getting the user
 		List<CartItem> cartItemsList = userInfo.getCart().getProducts(); //getting the list of cart items
 		

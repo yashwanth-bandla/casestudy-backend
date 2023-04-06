@@ -9,20 +9,20 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 
 @Entity
-public class CartItem implements Serializable {
+public class OrderItem implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int cartItemId;
+	private int orderItemId;
 	@OneToOne
 	private ProductInfo product;
 	private int quantity;
 	
 	
-	public int getCartItemId() {
-		return cartItemId;
+	public int getOrderItemId() {
+		return orderItemId;
 	}
-	public void setCartItemId(int cartItemId) {
-		this.cartItemId = cartItemId;
+	public void setOrderItemId(int orderItemId) {
+		this.orderItemId = orderItemId;
 	}
 	public ProductInfo getProduct() {
 		return product;
@@ -38,15 +38,15 @@ public class CartItem implements Serializable {
 	}
 	@Override
 	public String toString() {
-		return "CartItem [cartItemId=" + cartItemId + ", product=" + product + ", quantity=" + quantity + "]";
+		return "OrderItem [orderItemId=" + orderItemId + ", product=" + product + ", quantity=" + quantity + "]";
 	}
-	public CartItem(ProductInfo product, int quantity) {
+	public OrderItem(ProductInfo product, int quantity) {
 		super();
 		this.product = product;
 		this.quantity = quantity;
 	}
-	public CartItem() {
+	public OrderItem() {
 		super();
-		
+		// TODO Auto-generated constructor stub
 	}
 }

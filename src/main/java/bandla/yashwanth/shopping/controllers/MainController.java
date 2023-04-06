@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import bandla.yashwanth.shopping.Cart;
 import bandla.yashwanth.shopping.CartItem;
+import bandla.yashwanth.shopping.Orders;
 import bandla.yashwanth.shopping.ProductInfo;
 import bandla.yashwanth.shopping.ResultObject;
 import bandla.yashwanth.shopping.UserInfo;
@@ -25,6 +26,8 @@ import bandla.yashwanth.shopping.dao.AddressRepository;
 import bandla.yashwanth.shopping.dao.CartItemRepository;
 import bandla.yashwanth.shopping.dao.CartRepository;
 import bandla.yashwanth.shopping.dao.CategoryRepository;
+import bandla.yashwanth.shopping.dao.OrderItemRepository;
+import bandla.yashwanth.shopping.dao.OrdersRepository;
 import bandla.yashwanth.shopping.dao.ProductInfoRepository;
 import bandla.yashwanth.shopping.dao.SubCategoryRepository;
 import bandla.yashwanth.shopping.dao.UserInfoRepository;
@@ -47,6 +50,11 @@ public class MainController {
 	private CartItemRepository cartItemRepository;
 	@Autowired
 	private CartRepository cartRepository;
+	@Autowired
+	private OrdersRepository ordersRepository;
+	@Autowired
+	private OrderItemRepository orderItemRepository;
+	
 	@Autowired 
 	private EntityManager entityManager;
 	
@@ -85,10 +93,9 @@ public class MainController {
 	}
 	
 	@PostMapping("/signup")
-	public ResponseEntity<ResultObject> SignUp(@RequestBody UserInfo user, UserInfoRepository userInfoRepository, AddressRepository addressRepository) {
+	public ResponseEntity<ResultObject> SignUp(@RequestBody UserInfo user) {
 //		ResponseEntity<String>
-		userInfoRepository = this.userInfoRepository;
-		addressRepository =  this.addressRepository;
+
 		DoSignUp.doSignUp(user,userInfoRepository,addressRepository, passwordEncoder);
 		ResultObject successResultObject = new ResultObject();
 		successResultObject.setResult("successfully signed up!");
@@ -97,8 +104,7 @@ public class MainController {
 	}
 	
 	@PostMapping("/logout")
-	public ResponseEntity<ResultObject> LogOut(@RequestBody UserInfo user, UserInfoRepository userInfoRepository) {
-		userInfoRepository = this.userInfoRepository;
+	public ResponseEntity<ResultObject> LogOut(@RequestBody UserInfo user) {
 		ResultObject successResultObject = new ResultObject();
 		successResultObject.setResult("success");
 		return new ResponseEntity<>(successResultObject, HttpStatus.OK);
@@ -112,8 +118,7 @@ public class MainController {
 	}
 	
 	@PostMapping("/updateProfile")
-	public ResponseEntity<ResultObject> updateProfile(@RequestBody UserInfo user, UserInfoRepository userInfoRepository) {
-		userInfoRepository = this.userInfoRepository;
+	public ResponseEntity<ResultObject> updateProfile(@RequestBody UserInfo user) {
 		UpdateUser.updateUser(user, userInfoRepository);
 		ResultObject successResultObject = new ResultObject();
 		successResultObject.setResult("success");
@@ -124,23 +129,21 @@ public class MainController {
 	
 	@PreAuthorize("hasRole('admin')")
 	@PostMapping("/products/addProduct")
-	public ProductInfo addproduct(@RequestBody ProductInfo addedproduct, ProductInfoRepository productInfoRepository) {
-		productInfoRepository = this.productInfoRepository;
+	public ProductInfo addproduct(@RequestBody ProductInfo addedproduct) {
 		AddProduct.addProduct(addedproduct, productInfoRepository, categoryRepository, subCategoryRepository);
 		return addedproduct;
 	}
 	
 	@PreAuthorize("hasRole('admin')")
 	@PostMapping("/products/update")
-	public ProductInfo updateproduct(@RequestBody ProductInfo updatedproduct, ProductInfoRepository productInfoRepository) {
-		productInfoRepository = this.productInfoRepository;
+	public ProductInfo updateproduct(@RequestBody ProductInfo updatedproduct) {
 		UpdateProduct.updateProduct(updatedproduct, productInfoRepository);
 		return updatedproduct;
 	}
 	
 	@GetMapping("/products/getById/{productId}")
 	public ProductInfo requestProduct(@PathVariable("productId") int productId) {
-		return GetProduct.getProduct(productId,productInfoRepository);
+		return GetProduct.getProduct(productId);
 //		return requestedProduct;
 	}
 	
@@ -170,13 +173,23 @@ public class MainController {
 	@GetMapping("/cart/{userId}/getCart")
 	public Cart getCart(@PathVariable("userId") int userId) {
 		return DoGetCart.doGetCart(userId, userInfoRepository);
-
 	}
 	
 	@GetMapping("/cart/{userId}/getCartItem/{cartitemId}")
 	public CartItem getCartItem(@PathVariable("userId") int userId, @PathVariable("cartitemId") int cartitemId) {
 		return DoGetCartItem.doGetCartItem(userId, cartitemId, userInfoRepository,cartItemRepository);
 	}
+	
+	@GetMapping("/order/{userId}/createOrder")
+	public Orders createOrder(@PathVariable("userId") int userId) {
+		return DoCreateOrder.doCreateOrder(userId, userInfoRepository, cartRepository, ordersRepository, orderItemRepository);
+	}
+	
+	@GetMapping("/order/{userId}/getOrders")
+	public Orders getOrders(@PathVariable("userId") int userId) {
+		return DoGetOrders.doGetOrders(userId, userInfoRepository, cartRepository, ordersRepository, orderItemRepository);
+	}
+	
 
 	@GetMapping("/cart/{userId}/add/{productId}")
 	public CartItem addToCart(@PathVariable("userId") int userId, @PathVariable("productId") int productId) {
@@ -184,14 +197,16 @@ public class MainController {
 	}
 	
 	@GetMapping("/cart/{userId}/remove/{productId}")
-	public String removeFromCart(@PathVariable("userId") int userId, @PathVariable("productId") int productId) {
-		return DoRemoveFromCart.doRemoveFromCart(userId,productId,userInfoRepository,productInfoRepository, cartItemRepository, cartRepository);
+	public void removeFromCart(@PathVariable("userId") int userId, @PathVariable("productId") int productId) {
+		DoRemoveFromCart.doRemoveFromCart(userId,productId,userInfoRepository,productInfoRepository, cartItemRepository, cartRepository);
 	}
 	
 	@GetMapping("/cart/{userId}/reduceQuantity/{productId}")
 	public CartItem reduceQuantity(@PathVariable("userId") int userId, @PathVariable("productId") int productId) {
 		return DoReduceQuantity.doReduceQuantity(userId,productId, userInfoRepository);
 	}
+	
+	
 	
 	
 }

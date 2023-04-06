@@ -1,8 +1,10 @@
 package bandla.yashwanth.shopping.controllers;
 
+import org.springframework.stereotype.Service;
+
 import bandla.yashwanth.shopping.UserInfo;
 import bandla.yashwanth.shopping.dao.UserInfoRepository;
-
+@Service
 public class UpdateUser {
 	public static void updateUser(UserInfo user, UserInfoRepository userInfoRepository) {
 	

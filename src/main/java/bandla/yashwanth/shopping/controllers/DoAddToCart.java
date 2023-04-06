@@ -3,6 +3,9 @@ package bandla.yashwanth.shopping.controllers;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+
 import bandla.yashwanth.shopping.Cart;
 import bandla.yashwanth.shopping.CartItem;
 import bandla.yashwanth.shopping.ProductInfo;
@@ -11,7 +14,7 @@ import bandla.yashwanth.shopping.dao.CartItemRepository;
 import bandla.yashwanth.shopping.dao.CartRepository;
 import bandla.yashwanth.shopping.dao.ProductInfoRepository;
 import bandla.yashwanth.shopping.dao.UserInfoRepository;
-
+@Service
 public class DoAddToCart {
 	public static CartItem doAddToCart(
 									int userId,
@@ -23,17 +26,17 @@ public class DoAddToCart {
 									) 
 	{
 		ProductInfo productToAdd = productInfoRepository.findById(productId).get();  //to be added product
-//		CartItem cartItemToAdd = new CartItem(); 
-//		cartItemToAdd.setProduct(productToAdd);
-//		cartItemToAdd.setQuantity(1);
-//		CartItem addedCartItem = cartItemRepository.save(cartItemToAdd);  //creating a cartitem object to store the product
-//		
-//		Cart newCart = new Cart();
-//		List<CartItem> cartItemList = new ArrayList<>();  //creating a new cart to store the list of cartItems
 		
+		String email = SecurityContextHolder.getContext().getAuthentication()
+                .getName();
+		userId = userInfoRepository.getUserByUserName(email).getUserId();
+//		System.out.println(userId);
 
 		UserInfo userInfo = userInfoRepository.findById(userId).get(); //getting the user info
 		Cart cart = userInfo.getCart();  // current cart of the user
+		
+
+		
 		if (cart==null) { //if the current cart of the user is empty, create a new cart 
 			
 			CartItem cartItemToAdd = new CartItem(); 
@@ -50,7 +53,7 @@ public class DoAddToCart {
 			userInfo.setCart(returnedCart); //setting the cart property of user to the new cart
 			
 			UserInfo finalUserInfo =  userInfoRepository.save(userInfo); //saving the user with updated cart
-			System.out.println(finalUserInfo);
+
 			
 			
 			return addedCartItem; //returning the added cart item
@@ -70,7 +73,7 @@ public class DoAddToCart {
 				
 				UserInfo finalUserInfo =  userInfoRepository.save(userInfo);  //saving the updated user
 				increasedQuantity = true;
-				System.out.println(finalUserInfo);
+
 				
 				return returnedCartItem;  //returning the updated cart item
 			}
@@ -86,7 +89,7 @@ public class DoAddToCart {
 			cart.setProducts(userCartItems); //setting the changed cartitems list for user
 			cartRepository.save(cart); //saving the updated cart
 			UserInfo finalUserInfo =  userInfoRepository.save(userInfo); //saving the updated user
-			System.out.println(finalUserInfo);
+
 			
 			return addedCartItem;
 		}
