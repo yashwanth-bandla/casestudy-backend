@@ -6,8 +6,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
-import bandla.yashwanth.shopping.UserInfo;
-import bandla.yashwanth.shopping.dao.UserInfoRepository;
+import bandla.yashwanth.shopping.user.UserInfo;
+import bandla.yashwanth.shopping.user.UserInfoRepository;
 
 @Component
 public class CustomUserDetailsService implements UserDetailsService {

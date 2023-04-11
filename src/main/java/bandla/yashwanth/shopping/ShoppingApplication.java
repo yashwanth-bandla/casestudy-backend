@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 
-@EnableJpaRepositories("bandla.yashwanth.shopping.dao")
+@EnableJpaRepositories("bandla.yashwanth.shopping")
 @EntityScan("bandla.yashwanth.shopping")
 @SpringBootApplication
 public class ShoppingApplication {

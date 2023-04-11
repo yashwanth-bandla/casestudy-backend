@@ -16,21 +16,40 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import bandla.yashwanth.shopping.Cart;
-import bandla.yashwanth.shopping.CartItem;
-import bandla.yashwanth.shopping.Orders;
-import bandla.yashwanth.shopping.ProductInfo;
 import bandla.yashwanth.shopping.ResultObject;
-import bandla.yashwanth.shopping.UserInfo;
-import bandla.yashwanth.shopping.dao.AddressRepository;
-import bandla.yashwanth.shopping.dao.CartItemRepository;
-import bandla.yashwanth.shopping.dao.CartRepository;
-import bandla.yashwanth.shopping.dao.CategoryRepository;
-import bandla.yashwanth.shopping.dao.OrderItemRepository;
-import bandla.yashwanth.shopping.dao.OrdersRepository;
-import bandla.yashwanth.shopping.dao.ProductInfoRepository;
-import bandla.yashwanth.shopping.dao.SubCategoryRepository;
-import bandla.yashwanth.shopping.dao.UserInfoRepository;
+import bandla.yashwanth.shopping.cart.Cart;
+import bandla.yashwanth.shopping.cart.CartItem;
+import bandla.yashwanth.shopping.cart.CartItemRepository;
+import bandla.yashwanth.shopping.cart.CartRepository;
+import bandla.yashwanth.shopping.cart.DoAddToCart;
+import bandla.yashwanth.shopping.cart.DoGetCart;
+import bandla.yashwanth.shopping.cart.DoGetCartItem;
+import bandla.yashwanth.shopping.cart.DoReduceQuantity;
+import bandla.yashwanth.shopping.cart.DoRemoveFromCart;
+import bandla.yashwanth.shopping.orders.DoCreateOrder;
+import bandla.yashwanth.shopping.orders.DoGetOrders;
+import bandla.yashwanth.shopping.orders.OrderItemRepository;
+import bandla.yashwanth.shopping.orders.Orders;
+import bandla.yashwanth.shopping.orders.OrdersRepository;
+import bandla.yashwanth.shopping.product.CategoryRepository;
+import bandla.yashwanth.shopping.product.DoAddProduct;
+import bandla.yashwanth.shopping.product.DoGetAllProducts;
+import bandla.yashwanth.shopping.product.DoGetCategoryAndSubcategoryNames;
+import bandla.yashwanth.shopping.product.DoGetProduct;
+import bandla.yashwanth.shopping.product.DoGetProductsByCategory;
+import bandla.yashwanth.shopping.product.DoGetProductsByFilters;
+import bandla.yashwanth.shopping.product.DoGetProductsBySearch;
+import bandla.yashwanth.shopping.product.DoUpdateProduct;
+import bandla.yashwanth.shopping.product.ProductInfo;
+import bandla.yashwanth.shopping.product.ProductInfoRepository;
+import bandla.yashwanth.shopping.product.SubCategoryRepository;
+import bandla.yashwanth.shopping.user.AddressRepository;
+import bandla.yashwanth.shopping.user.CheckLogin;
+import bandla.yashwanth.shopping.user.DoSignUp;
+import bandla.yashwanth.shopping.user.GetUser;
+import bandla.yashwanth.shopping.user.UpdateUser;
+import bandla.yashwanth.shopping.user.UserInfo;
+import bandla.yashwanth.shopping.user.UserInfoRepository;
 import jakarta.persistence.EntityManager;
 
 @RestController
@@ -61,152 +80,64 @@ public class MainController {
 	@Autowired 
 	private PasswordEncoder passwordEncoder;
 	
+	@Autowired
+	private DoSignUp doSignUp;
 	
-	@PostMapping("/login")
-	public ResponseEntity<UserInfo> userlogin(@RequestBody UserInfo user, UserInfoRepository userInfoRepository) {
-		
-		userInfoRepository = this.userInfoRepository;
-		UserInfo inputUser;
-		inputUser = CheckLogin.checkLogin(user, userInfoRepository);
+	@Autowired
+	private GetUser getUser;
 	
-		if(inputUser.getName()!=null) {
-//			ResultObject successResultObject = new ResultObject();
-//			successResultObject.setResult("success");
-//			return new ResponseEntity<>(successResultObject, HttpStatus.OK);
-			return new ResponseEntity<>(inputUser, HttpStatus.OK);
-		} else {
-			ResultObject failureResultObject = new ResultObject();
-			failureResultObject.setResult("failure");
-			return new ResponseEntity<>(inputUser, HttpStatus.UNAUTHORIZED);
-		}
-
-	}
+	@Autowired
+	private UpdateUser updateUser;
 	
-	@GetMapping("/")
-	public String homepage() {
-		return "Hello from home page";
-	}
+	@Autowired
+	private DoAddProduct doAddProduct;
 	
-	@PostMapping("/home")
-	public String homepagepost() {
-		return "Hello from home page post";
-	}
+	@Autowired
+	private DoUpdateProduct doUpdateProduct;
 	
-	@PostMapping("/signup")
-	public ResponseEntity<ResultObject> SignUp(@RequestBody UserInfo user) {
-//		ResponseEntity<String>
-
-		DoSignUp.doSignUp(user,userInfoRepository,addressRepository, passwordEncoder);
-		ResultObject successResultObject = new ResultObject();
-		successResultObject.setResult("successfully signed up!");
-		return new ResponseEntity<>(successResultObject, HttpStatus.OK);
-
-	}
+	@Autowired
+	private DoGetProduct doGetProduct;
 	
-	@PostMapping("/logout")
-	public ResponseEntity<ResultObject> LogOut(@RequestBody UserInfo user) {
-		ResultObject successResultObject = new ResultObject();
-		successResultObject.setResult("success");
-		return new ResponseEntity<>(successResultObject, HttpStatus.OK);
-	}
+	@Autowired
+	private DoGetAllProducts doGetAllProducts;
 	
-	@GetMapping("/getProfile/{userId}")
-	public ResponseEntity<UserInfo> getProfile(@PathVariable("userId") int userId) {
-		UserInfo returnedUser=  GetUser.getUser(userId,userInfoRepository);
-		return new ResponseEntity<>(returnedUser, HttpStatus.OK);
-		
-	}
+	@Autowired
+	private DoGetProductsByCategory doGetProductsByCategory;
 	
-	@PostMapping("/updateProfile")
-	public ResponseEntity<ResultObject> updateProfile(@RequestBody UserInfo user) {
-		UpdateUser.updateUser(user, userInfoRepository);
-		ResultObject successResultObject = new ResultObject();
-		successResultObject.setResult("success");
-		return new ResponseEntity<>(successResultObject, HttpStatus.OK);
-		
-		
-	}
+	@Autowired
+	private DoGetProductsByFilters doGetProductsByFilters;
 	
-	@PreAuthorize("hasRole('admin')")
-	@PostMapping("/products/addProduct")
-	public ProductInfo addproduct(@RequestBody ProductInfo addedproduct) {
-		AddProduct.addProduct(addedproduct, productInfoRepository, categoryRepository, subCategoryRepository);
-		return addedproduct;
-	}
+	@Autowired
+	private DoGetProductsBySearch doGetProductsBySearch;
 	
-	@PreAuthorize("hasRole('admin')")
-	@PostMapping("/products/update")
-	public ProductInfo updateproduct(@RequestBody ProductInfo updatedproduct) {
-		UpdateProduct.updateProduct(updatedproduct, productInfoRepository);
-		return updatedproduct;
-	}
+	@Autowired
+	private DoGetCart doGetCart;
 	
-	@GetMapping("/products/getById/{productId}")
-	public ProductInfo requestProduct(@PathVariable("productId") int productId) {
-		return GetProduct.getProduct(productId);
-//		return requestedProduct;
-	}
+	@Autowired
+	private DoGetCartItem doGetCartItem;
 	
-	@GetMapping("/products/getAllProducts")
-	public List<ProductInfo> RequestAllProducts() {
-		return GetAllProducts.getAllProducts(productInfoRepository);
-//		return requestedProduct;
-	}
+	@Autowired
+	private DoCreateOrder doCreateOrder;
 	
-//	@PreAuthorize("hasRole('normal')")
-	@GetMapping("/products/{category}")
-	public List<ProductInfo> productsByCategory(@PathVariable("category") int categoryid){
-		return GetProductsByCategory.getProductsByCategory(categoryid, productInfoRepository);
-	}
+	@Autowired
+	private DoGetOrders doGetOrders;
 	
-	@GetMapping("/products/filter/{category}/{subcategory}")
-	public List<ProductInfo> productsByFilters(@PathVariable("category") String category, @PathVariable("subcategory") String subcategory){
-		 return GetProductsByFilters.getProductsByFilters(category,subcategory, productInfoRepository, entityManager);
-	}
+	@Autowired
+	private DoAddToCart doAddToCart;
 	
-//	@PreAuthorize("hasRole('admin')")
-	@GetMapping("/products/search/{searchString}")
-	public List<ProductInfo> productsBySearchString(@PathVariable("searchString") String searchString){
-		return GetProductsBySearch.getProductsBySearch(searchString,productInfoRepository);
-	}
-
-	@GetMapping("/cart/{userId}/getCart")
-	public Cart getCart(@PathVariable("userId") int userId) {
-		return DoGetCart.doGetCart(userId, userInfoRepository);
-	}
+	@Autowired
+	private DoRemoveFromCart doRemoveFromCart;
 	
-	@GetMapping("/cart/{userId}/getCartItem/{cartitemId}")
-	public CartItem getCartItem(@PathVariable("userId") int userId, @PathVariable("cartitemId") int cartitemId) {
-		return DoGetCartItem.doGetCartItem(userId, cartitemId, userInfoRepository,cartItemRepository);
-	}
+	@Autowired
+	private DoReduceQuantity doReduceQuantity;
 	
-	@GetMapping("/order/{userId}/createOrder")
-	public Orders createOrder(@PathVariable("userId") int userId) {
-		return DoCreateOrder.doCreateOrder(userId, userInfoRepository, cartRepository, ordersRepository, orderItemRepository);
-	}
+	@Autowired
+	private DoGetCategoryAndSubcategoryNames doGetCategoryAndSubcategoryNames;
 	
-	@GetMapping("/order/{userId}/getOrders")
-	public Orders getOrders(@PathVariable("userId") int userId) {
-		return DoGetOrders.doGetOrders(userId, userInfoRepository, cartRepository, ordersRepository, orderItemRepository);
-	}
+	@Autowired 
+	private CheckLogin checkLogin;
+	
 	
 
-	@GetMapping("/cart/{userId}/add/{productId}")
-	public CartItem addToCart(@PathVariable("userId") int userId, @PathVariable("productId") int productId) {
-		return DoAddToCart.doAddToCart(userId,productId,userInfoRepository,productInfoRepository, cartItemRepository, cartRepository);
-	}
-	
-	@GetMapping("/cart/{userId}/remove/{productId}")
-	public void removeFromCart(@PathVariable("userId") int userId, @PathVariable("productId") int productId) {
-		DoRemoveFromCart.doRemoveFromCart(userId,productId,userInfoRepository,productInfoRepository, cartItemRepository, cartRepository);
-	}
-	
-	@GetMapping("/cart/{userId}/reduceQuantity/{productId}")
-	public CartItem reduceQuantity(@PathVariable("userId") int userId, @PathVariable("productId") int productId) {
-		return DoReduceQuantity.doReduceQuantity(userId,productId, userInfoRepository);
-	}
-	
-	
-	
 	
 }
