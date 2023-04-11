@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
-import bandla.yashwanth.shopping.user.UserInfo;
 
 public interface ProductInfoRepository extends CrudRepository<ProductInfo, Integer> {
 	@Query("select p from ProductInfo p where p.category.categoryid = :id") //this is a JPQL query

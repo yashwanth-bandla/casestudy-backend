@@ -18,9 +18,6 @@ public class DoGetProductsByFilters {
 
 	@Autowired
 	private DoGetAllProducts doGetAllProducts;
-
-	@Autowired
-	private ProductInfoRepository productInfoRepository;
 	
 	@Autowired 
 	private EntityManager entityManager;

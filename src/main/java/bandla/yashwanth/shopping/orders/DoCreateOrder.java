@@ -1,6 +1,5 @@
 package bandla.yashwanth.shopping.orders;
 
-import java.nio.channels.AcceptPendingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import bandla.yashwanth.shopping.cart.Cart;
 import bandla.yashwanth.shopping.cart.CartItem;
-import bandla.yashwanth.shopping.cart.CartItemRepository;
 import bandla.yashwanth.shopping.cart.CartRepository;
 import bandla.yashwanth.shopping.user.UserInfo;
 import bandla.yashwanth.shopping.user.UserInfoRepository;

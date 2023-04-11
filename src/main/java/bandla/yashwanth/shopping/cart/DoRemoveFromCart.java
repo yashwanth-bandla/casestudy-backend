@@ -17,12 +17,6 @@ public class DoRemoveFromCart {
 	private UserInfoRepository userInfoRepository;
 
 	@Autowired
-	private CartRepository cartRepository;
-
-	@Autowired
-	private ProductInfoRepository productInfoRepository;
-
-	@Autowired
 	private CartItemRepository cartItemRepository;
 
 	public void removeFromCart(int userId, int productId) {

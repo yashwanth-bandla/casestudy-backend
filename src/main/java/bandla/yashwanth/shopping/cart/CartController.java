@@ -8,17 +8,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import bandla.yashwanth.shopping.orders.DoCreateOrder;
-import bandla.yashwanth.shopping.orders.DoGetOrders;
-import bandla.yashwanth.shopping.product.DoAddProduct;
-import bandla.yashwanth.shopping.product.DoGetAllProducts;
-import bandla.yashwanth.shopping.product.DoGetCategoryAndSubcategoryNames;
-import bandla.yashwanth.shopping.product.DoGetProduct;
-import bandla.yashwanth.shopping.product.DoGetProductsByCategory;
-import bandla.yashwanth.shopping.product.DoGetProductsByFilters;
-import bandla.yashwanth.shopping.product.DoGetProductsBySearch;
-import bandla.yashwanth.shopping.product.DoUpdateProduct;
-import bandla.yashwanth.shopping.user.CheckLogin;
 
 @RestController
 @CrossOrigin(origins = "*")

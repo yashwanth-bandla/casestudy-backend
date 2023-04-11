@@ -3,7 +3,6 @@ package bandla.yashwanth.shopping.user;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,29 +11,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import bandla.yashwanth.shopping.ResultObject;
-import bandla.yashwanth.shopping.cart.DoAddToCart;
-import bandla.yashwanth.shopping.cart.DoGetCart;
-import bandla.yashwanth.shopping.cart.DoGetCartItem;
-import bandla.yashwanth.shopping.cart.DoReduceQuantity;
-import bandla.yashwanth.shopping.cart.DoRemoveFromCart;
-import bandla.yashwanth.shopping.orders.DoCreateOrder;
-import bandla.yashwanth.shopping.orders.DoGetOrders;
-import bandla.yashwanth.shopping.product.DoAddProduct;
-import bandla.yashwanth.shopping.product.DoGetAllProducts;
-import bandla.yashwanth.shopping.product.DoGetCategoryAndSubcategoryNames;
-import bandla.yashwanth.shopping.product.DoGetProduct;
-import bandla.yashwanth.shopping.product.DoGetProductsByCategory;
-import bandla.yashwanth.shopping.product.DoGetProductsByFilters;
-import bandla.yashwanth.shopping.product.DoGetProductsBySearch;
-import bandla.yashwanth.shopping.product.DoUpdateProduct;
-import jakarta.persistence.EntityManager;
 
 @RestController
 @CrossOrigin(origins = "*")
 public class UserController {
 
-	@Autowired
-	private EntityManager entityManager;
 
 	@Autowired
 	private DoSignUp doSignUp;

@@ -28,9 +28,6 @@ public class DoSignUp {
 	private CartRepository cartRepository;
 
 	@Autowired
-	private OrdersRepository ordersRepository;
-
-	@Autowired
 	private PasswordEncoder passwordEncoder;
 
 	public void signUp(UserInfo user) {
